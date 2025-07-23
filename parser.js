@@ -7,7 +7,7 @@
 
 const express = require('express');
 const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
+const {chromium} = require('playwright');
 const axios = require('axios');
 
 const app = express();
@@ -50,22 +50,30 @@ const commands = {
 async function safeClick(page, selector) {
     page.removeAllListeners('request');
 
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-        const url = req.url();
-        if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
-            console.warn('⛔ Блокирую скачивание:', url);
-            req.abort();
-        } else {
-            req.continue();
-        }
-    });
-
-
-    const client = await page.target().createCDPSession();
-    await client.send('Page.setDownloadBehavior', {
-        behavior: 'deny'
-    });
+    // await page.setRequestInterception(true);
+    // page.on('request', (req) => {
+    //     const url = req.url();
+    //     if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
+    //         console.warn('⛔ Блокирую скачивание:', url);
+    //         req.abort();
+    //     } else {
+    //         req.continue();
+    //     }
+    // });
+    
+    await page.route('**/*', (route) => {
+    const url = route.request().url();
+    if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
+        console.warn('⛔ Блокирую скачивание:', url);
+        route.abort();
+    } else {
+        route.continue();
+    }
+});
+    // const client = await page.target().createCDPSession();
+    // await client.send('Page.setDownloadBehavior', {
+    //     behavior: 'deny'
+    // });
 
 
     await page.evaluate(() => {
@@ -221,7 +229,7 @@ async function main(stack, url) {
     const answer = [];
     let browser;
     try {
-        browser = await puppeteer.launch({ headless: true });
+        browser = await chromium.launch({ headless: true });
     } catch (err) {
         console.error('Browser Error:', err);
         throw new Error('Browser not work: error');
