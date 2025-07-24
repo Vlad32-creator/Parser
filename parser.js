@@ -237,6 +237,7 @@ async function main(stack, url) {
     let browser;
     try {
         browser = await puppeteer.launch({
+            executablePath: '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.168/chrome-linux64/chrome',
             headless: true,
             args: [
                 '--no-sandbox',
