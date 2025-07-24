@@ -1,21 +1,14 @@
-// import puppeteer from 'puppeteer';
-//  import express from 'express';
-// import pkg from 'express';
-// const express = pkg.default || pkg;
-// import axios from 'axios';
-// import * as cheerio from 'cheerio';
-
 const express = require('express');
 const cheerio = require('cheerio');
-// const {chromium} = require('playwright');
+const { chromium } = require('playwright');
 const axios = require('axios');
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
 
-async function check(){
-    console.log('🐛 Puppeteer default cache dir:', process.env.PUPPETEER_CACHE_DIR);
-    console.log('🐛 Puppeteer executable path:', await puppeteer.executablePath?.());
-}
-check();
+// async function check() {
+//      console.log('🐛 Puppeteer default cache dir:', process.env.PUPPETEER_CACHE_DIR);
+//      console.log('🐛 Puppeteer executable path:', await puppeteer.executablePath?.());
+// }
+// check();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -236,18 +229,22 @@ async function main(stack, url) {
     const answer = [];
     let browser;
     try {
-        browser = await puppeteer.launch({
-            executablePath: '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.168/chrome-linux64/chrome',
+        browser = await chromium.launch({
             headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-gpu',
-                '--no-zygote',
-                '--single-process',
-            ],
+            args: ['--no-sandbox'],
         });
+        // browser = await puppeteer.launch({
+        //     executablePath: '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.168/chrome-linux64/chrome',
+        //     headless: true,
+        //     args: [
+        //         '--no-sandbox',
+        //         '--disable-setuid-sandbox',
+        //         '--disable-dev-shm-usage',
+        //         '--disable-gpu',
+        //         '--no-zygote',
+        //         '--single-process',
+        //     ],
+        // });
     } catch (err) {
         console.error('Browser Error:', err);
         throw new Error('Browser not work: error');
