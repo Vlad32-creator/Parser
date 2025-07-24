@@ -11,6 +11,12 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const puppeteer = require('puppeteer');
 
+async function check(){
+    console.log('🐛 Puppeteer default cache dir:', process.env.PUPPETEER_CACHE_DIR);
+    console.log('🐛 Puppeteer executable path:', await puppeteer.executablePath?.());
+}
+check();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 let screenshot = false;
