@@ -15,11 +15,11 @@ You can try the API at this link [https://parser-x9js.onrender.com](https://pars
 
 ## HAW TO DOWNLOAD AND RUN THE PROJECT: 
 
-git clone https://github.com/Vlad32-creator/Parser
-cd parser
-npm install
-npx playwright install chromium
-npm start
+- git clone https://github.com/Vlad32-creator/Parser
+- cd parser
+- npm install
+- npx playwright install chromium
+- npm start
 
 project work 🎉
 
