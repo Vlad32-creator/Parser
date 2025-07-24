@@ -7,8 +7,9 @@
 
 const express = require('express');
 const cheerio = require('cheerio');
-const {chromium} = require('playwright');
+// const {chromium} = require('playwright');
 const axios = require('axios');
+const puppeteer = require('puppeteer');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -60,16 +61,16 @@ async function safeClick(page, selector) {
     //         req.continue();
     //     }
     // });
-    
+
     await page.route('**/*', (route) => {
-    const url = route.request().url();
-    if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
-        console.warn('⛔ Блокирую скачивание:', url);
-        route.abort();
-    } else {
-        route.continue();
-    }
-});
+        const url = route.request().url();
+        if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
+            console.warn('⛔ Блокирую скачивание:', url);
+            route.abort();
+        } else {
+            route.continue();
+        }
+    });
     // const client = await page.target().createCDPSession();
     // await client.send('Page.setDownloadBehavior', {
     //     behavior: 'deny'
@@ -229,7 +230,17 @@ async function main(stack, url) {
     const answer = [];
     let browser;
     try {
-        browser = await chromium.launch({ headless: true });
+        browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--no-zygote',
+                '--single-process',
+            ],
+        });
     } catch (err) {
         console.error('Browser Error:', err);
         throw new Error('Browser not work: error');
