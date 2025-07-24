@@ -6,10 +6,23 @@
 
 This is a universal website scraping API with two modes:
 
+You can try the API at this link [https://parser-x9js.onrender.com](https://parser-x9js.onrender.com)
+
 - **`/easePars`** — fast and simple. Send a JSON request and get results quickly.
 - **`/mainPars`** — advanced and powerful. Allows full browser interaction (clicks, typing, waiting, navigation, scraping, etc).
 
 ---
+
+## HAW TO DOWNLOAD AND RUN THE PROJECT: 
+
+git clone https://github.com/Vlad32-creator/Parser
+cd parser
+npm install
+npx playwright install chromium
+npm start
+
+project work 🎉
+
 
 ## 🛠️ Technologies Used
 
