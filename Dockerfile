@@ -29,9 +29,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # Устанавливаем npm зависимости
-RUN npm install  
+RUN npm install
 # Скачиваем браузеры Playwright во время сборки
-RUN npx playwright install chromium
+# RUN npx playwright install chromium
 
 # Копируем весь проект в контейнер
 COPY . .

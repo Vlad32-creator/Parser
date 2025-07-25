@@ -4,9 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node parser.js"
+    "start": "npx playwright install chromium && node parser.js"
   },
-  "keywords": [],
+  "keywords": [],  
   "author": "",
   "license": "ISC",
   "type": "commonjs",
