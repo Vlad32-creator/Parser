@@ -42,7 +42,7 @@
 # # Запускаем твой скрипт (замени на свой основной файл)
 # CMD ["npm", "start"]
 
-FROM mcr.microsoft.com/playwright:v1.44.0-jammy
+FROM mcr.microsoft.com/playwright:v1.54.1-jammy
 
 WORKDIR /app
 
