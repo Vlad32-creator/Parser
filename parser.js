@@ -2,13 +2,7 @@ const express = require('express');
 const cheerio = require('cheerio');
 const { chromium } = require('playwright');
 const axios = require('axios');
-// const puppeteer = require('puppeteer');
 
-// async function check() {
-//      console.log('🐛 Puppeteer default cache dir:', process.env.PUPPETEER_CACHE_DIR);
-//      console.log('🐛 Puppeteer executable path:', await puppeteer.executablePath?.());
-// }
-// check();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -50,17 +44,6 @@ const commands = {
 async function safeClick(page, selector) {
     page.removeAllListeners('request');
 
-    // await page.setRequestInterception(true);
-    // page.on('request', (req) => {
-    //     const url = req.url();
-    //     if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
-    //         console.warn('⛔ Блокирую скачивание:', url);
-    //         req.abort();
-    //     } else {
-    //         req.continue();
-    //     }
-    // });
-
     await page.route('**/*', (route) => {
         const url = route.request().url();
         if (/\.(pdf|exe|zip|rar|dmg|apk|msi|bat|scr)(\?|#|$)/i.test(url)) {
@@ -70,11 +53,6 @@ async function safeClick(page, selector) {
             route.continue();
         }
     });
-    // const client = await page.target().createCDPSession();
-    // await client.send('Page.setDownloadBehavior', {
-    //     behavior: 'deny'
-    // });
-
 
     await page.evaluate(() => {
         document.querySelectorAll('a[download]').forEach(a => a.removeAttribute('download'));
@@ -233,18 +211,7 @@ async function main(stack, url) {
             headless: true,
             args: ['--no-sandbox'],
         });
-        // browser = await puppeteer.launch({
-        //     executablePath: '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.168/chrome-linux64/chrome',
-        //     headless: true,
-        //     args: [
-        //         '--no-sandbox',
-        //         '--disable-setuid-sandbox',
-        //         '--disable-dev-shm-usage',
-        //         '--disable-gpu',
-        //         '--no-zygote',
-        //         '--single-process',
-        //     ],
-        // });
+        
     } catch (err) {
         console.error('Browser Error:', err);
         throw new Error('Browser not work: error');
