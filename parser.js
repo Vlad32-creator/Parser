@@ -6,7 +6,6 @@ const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-let screenshot = false;
 const attr = [
     'src', 'href', 'title',
     'name', 'data', 'id', 'class',
@@ -23,11 +22,13 @@ const commands = {
     },
     click: (data, stack) => stack.push({ click: data }),
     data: (data, stack) => stack.push({ data: data }),
-    screenshot: (data) => {
+    screenshot: (data,stack,screen) => {
         if (data === 'true') {
-            screenshot = true;
+            screen.value = true;
+            console.log('screenshot: '+screen);
         } else {
-            screenshot = false;
+            screen.value = false;
+            console.log('screenshot: '+screen);
         }
     },
     wait: (data, stack) => {
@@ -203,7 +204,7 @@ function func() {
     }
 }
 
-async function main(stack, url) {
+async function main(stack, url,screenshot) {
     const answer = [];
     let browser;
     try {
@@ -224,8 +225,11 @@ async function main(stack, url) {
             const waitFor = stack[i + 1] ? Object.values(stack[i + 1])[0] : 'none';
             answer.push(await func()[Object.keys(stack[i])](page, ...Object.values(stack[i]), waitFor, answer));
         }
-        if (screenshot) {
-            await page.screenshot({ path: 'screenshot.png' });
+        console.log("screenshot: "+screenshot.value);
+        
+        if (screenshot.value) {
+            answer.push(await page.screenshot());
+            console.log('screenshot: '+screenshot.value);
         }
         await browser.close();
         return answer;
@@ -266,6 +270,7 @@ function checkArray(data) {
 async function textParser(data) {
     const string = data.toString().trim();
     let url = '';
+    let screenshot = {value:false};
     const stack = [];
     console.log(string);
     const res = string.split(';');
@@ -290,7 +295,7 @@ async function textParser(data) {
         console.log({ [key]: value });
 
         try {
-            commands[key ? key : 'none'](checkArray(value), stack);
+            commands[key ? key : 'none'](checkArray(value), stack,screenshot);
         } catch (err) {
             console.log(key, value);
             throw new Error(`Unexpected syntax in ${key}:${value}`);
@@ -302,7 +307,7 @@ async function textParser(data) {
 
     stack.forEach(el => console.log(el));
 
-    return await main(stack, url);
+    return await main(stack, url,screenshot);
 }
 
 app.post('/mainPars', express.text(), async (req, res) => {
