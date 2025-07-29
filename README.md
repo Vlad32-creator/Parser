@@ -76,15 +76,15 @@ url:<page> — navigate to a URL
 
 click:<selector> — click an element
 
-input:[<selector>,<value>] — type into an input
+input:[<selector>,<value>]; — type into an input
 
-wait:<milliseconds> — pause execution
+wait:<milliseconds>; — pause execution
 
-data:[<selector>, <attribute>] — extract attribute from first matching element
+data:[<selector>, <attribute>]; — extract attribute from first matching element
 
-alldata:[<selector>, <attribute>] — extract attribute from all matching elements
+alldata:[<selector>, <attribute>]; — extract attribute from all matching elements
 
-scrinshot — (coming soon)
+screenshot:true; - return screenshot
 
 🔹 Notes:
 The order of commands matters — execution happens sequentially
@@ -94,6 +94,15 @@ url can be placed anywhere in the command list
 Each command must end with a semicolon ;
 
 Use data for #ids, and alldata for .classes and tags
+
+🔹 About screenshot:
+
+Screenshot is optional for input.
+
+For select screenshot enter screenshot:true;
+if you enter somthing else in value screenshot dont work exemple:  screenshot:tru;.
+
+Screenshot returns always on last position in array. 
 
 🔁 Response format:
 Returns a JSON object:
@@ -112,7 +121,6 @@ json
   "error": "Something went wrong"
 }
 🔹 Example:
-css
 url:https://example.com;
 wait:2000;
 click:#submitBtn;
