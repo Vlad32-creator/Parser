@@ -13,6 +13,17 @@ Make a post request here:
 - **`/easePars`** — fast and simple. Send a JSON request and get results quickly.
 - **`/mainPars`** — advanced and powerful. Allows full browser interaction (clicks, typing, waiting, navigation, scraping, etc).
 
+For example you can copy this string and enter in cmd or Postman ...
+
+For cmd try it:
+
+curl -i -X POST https://parser-x9js.onrender.com/mainPars 
+-H "Content-Type: text/plain" 
+-d "url:https://vlad32-creator.github.io/Bankapp/;data:[#golden-card-wrapper,html];"
+
+Response should be:
+[{"success":"<div id=\"Blur-font\"></div><div id=\"golden-card\"><p id=\"golden-card-number\">000-000-000-000</p><p id=\"text-Golden-Card\">Golden Card</p><p id=\"text-Erval-Bank\">Erval Bank</p></div>"}]
+
 ---
 
 ## HAW TO DOWNLOAD AND RUN THE PROJECT: 
@@ -27,7 +38,7 @@ project work 🎉
 ## 🛠️ Technologies Used
 
 - [Express](https://expressjs.com/)
-- [Puppeteer](https://pptr.dev/)
+- [Playwright](https://playwright.dev)
 - [Cheerio](https://cheerio.js.org/)
 - [Axios](https://axios-http.com/)
 
