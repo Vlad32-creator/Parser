@@ -17,18 +17,17 @@ const commands = {
         if (typeof data !== 'string') {
             throw new Error('Ожидался строковый URL');
         }
-        url = data
-        console.log('[Команда URL] Установлен адрес:', url);
+        console.log('[Команда URL] Установлен адрес:', data);
     },
     click: (data, stack) => stack.push({ click: data }),
     data: (data, stack) => stack.push({ data: data }),
-    screenshot: (data,stack,screen) => {
+    screenshot: (data, stack, screen) => {
         if (data === 'true') {
             screen.value = true;
-            console.log('screenshot: '+screen);
+            console.log('screenshot: ' + screen);
         } else {
             screen.value = false;
-            console.log('screenshot: '+screen);
+            console.log('screenshot: ' + screen);
         }
     },
     wait: (data, stack) => {
@@ -204,32 +203,36 @@ function func() {
     }
 }
 
-async function main(stack, url,screenshot) {
-    const answer = [];
-    let browser;
+async function main(stack, url, screenshot) {
     try {
-        browser = await chromium.launch({
-            headless: true,
-            args: ['--no-sandbox'],
-        });
-        
-    } catch (err) {
-        console.error('Browser Error:', err);
-        throw new Error('Browser not work: error');
-    }
-    try {
-        const page = await browser.newPage();
-        await page.goto(url, { waitUntil: 'networkidle0' });
-
+        const answer = [];
+        let browser, page;
+        try {
+            browser = await chromium.launch({
+                headless: true,
+                args: ['--no-sandbox'],
+            });
+        } catch (err) {
+            console.error('Browser Error:', err);
+            return [{error: 'Server error Browser not wort'}];
+        }
+        try {
+            page = await browser.newPage();
+            await page.goto(url, { waitUntil: 'networkidle0' });
+        } catch (err) {
+            console.log('Error: ',err);
+            await browser.close();
+            return [{ error: 'NOT VALID URL. check url' }];
+        }
         for (let i = 0; i < stack.length; i++) {
             const waitFor = stack[i + 1] ? Object.values(stack[i + 1])[0] : 'none';
             answer.push(await func()[Object.keys(stack[i])](page, ...Object.values(stack[i]), waitFor, answer));
         }
-        console.log("screenshot: "+screenshot.value);
-        
+        console.log("screenshot: " + screenshot.value);
+
         if (screenshot.value) {
             answer.push(await page.screenshot());
-            console.log('screenshot: '+screenshot.value);
+            console.log('screenshot: ' + screenshot.value);
         }
         await browser.close();
         return answer;
@@ -270,7 +273,7 @@ function checkArray(data) {
 async function textParser(data) {
     const string = data.toString().trim();
     let url = '';
-    let screenshot = {value:false};
+    let screenshot = { value: false };
     const stack = [];
     console.log(string);
     const res = string.split(';');
@@ -295,7 +298,7 @@ async function textParser(data) {
         console.log({ [key]: value });
 
         try {
-            commands[key ? key : 'none'](checkArray(value), stack,screenshot);
+            commands[key ? key : 'none'](checkArray(value), stack, screenshot);
         } catch (err) {
             console.log(key, value);
             throw new Error(`Unexpected syntax in ${key}:${value}`);
@@ -307,7 +310,7 @@ async function textParser(data) {
 
     stack.forEach(el => console.log(el));
 
-    return await main(stack, url,screenshot);
+    return await main(stack, url, screenshot);
 }
 
 app.post('/mainPars', express.text(), async (req, res) => {
