@@ -2,9 +2,12 @@ const express = require('express');
 const cheerio = require('cheerio');
 const { chromium } = require('playwright');
 const axios = require('axios');
-
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
+
+
 const PORT = process.env.PORT || 5000;
 const attr = [
     'src', 'href', 'title',
