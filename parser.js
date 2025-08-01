@@ -32,7 +32,7 @@ const commands = {
     },
     wait: (data, stack) => {
         if (!isNaN(Number(data))) {
-            stack.push({ wait: Number(data) })
+            Number(data) > 3000? stack.push({ wait: 1000 }) : stack.push({ wait: Number(data) });
         } else {
             throw new Error('In Wait not Number');
         }
